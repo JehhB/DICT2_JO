@@ -90,7 +90,9 @@ a.logout-button {
   fill: #bebebe; 
 }
 
-
+.teybol tr:hover {
+  background-color: #959595; 
+}
 .table-container {
   overflow-x: auto;
   border-radius: 15px;
@@ -224,6 +226,15 @@ svg {
     position: relative;
     font-size: 0.9rem;
   }
+  tbody tr:nth-child(even):hover {
+    background-color: rgb(225, 225, 225);
+    
+  }
+  tbody tr:nth-child(odd):hover {
+    background-color: rgb(255, 255, 255);
+    
+  }
+ 
 
   .teybol td::before {
     content: attr(data-label);
@@ -233,6 +244,9 @@ svg {
     font-weight: bold;
     text-align: left;
     line-height: 95%;
+  }
+  .teybol td:hover {
+    background-color: #959595; 
   }
   html,
   body {
