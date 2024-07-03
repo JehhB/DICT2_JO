@@ -28,7 +28,7 @@ body {
 .left {
   display: flex;
   align-items: center;
-  justify-content: c;
+  justify-content: center;
 }
 .header .logo {
   width: 50px;
@@ -36,8 +36,8 @@ body {
   margin-right: 20px;
   border-radius: 50%;
 }
-.header h1 {
-  margin: 0;
+.header h2 {
+  margin-right: 30px;
 }
 
 a.add-button {
@@ -45,7 +45,16 @@ a.add-button {
   width: 24px;
   height: 24px;
 }
+a.logout-button {
+  padding-top: 20px;
+  background-color: transparent;
+  width: 50px;
+  height: 50px;
+}
 
+.logout-button:hover .svg-path {
+  fill: #bebebe; 
+}
 .add-button:hover {
   background-color: #45a049;
 }
@@ -54,15 +63,15 @@ a.add-button {
   overflow-x: auto;
   border-radius: 15px;
   border: rgba(0, 0, 0, 0.514) 2px solid;
-  max-width: 90%;
+  margin-left: 0px;
+  margin-right: 0px;
   display: flex;
-  margin-bottom: 50px;
 }
 
 .table-container-3 {
   display: flex;
   justify-content: center;
-  margin-top: 100px;
+  margin-top: 102px;
 }
 
 .table-container2 {
@@ -106,7 +115,8 @@ tbody tr:nth-child(odd) {
 }
 .edit-button,
 .delete-button,
-.add-button {
+.add-button,
+.logout-button {
   padding: 6px;
   font-size: 16px;
   color: white;
@@ -136,22 +146,24 @@ svg {
   margin-right: 0;
 }
 @media screen and (max-width: 1174px) {
+  
   .teybol td {
-    font-size: 75%;
-    padding: 1%;
+    font-size: 0.75rem;
   }
   .teybol th {
-    font-size: 90%;
-    }
-    
+    font-size: 0.9rem;
   }
-
+}
 
 @media screen and (max-width: 712px) {
+  .table-container {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
   .table-container-3,
   .table-container,
   .table-container-2 {
-    margin-top: 20px;
     width: 100%;
     border-radius: 0;
     border: none;
@@ -175,20 +187,19 @@ svg {
   }
 
   .teybol td {
+    box-sizing: border-box;
     text-align: right;
-    padding-right: 9.5%;
     padding-left: 0px;
+    padding-right: 16px;
     position: relative;
-    width: 90%;
-    font-size: 90%;
+    font-size: 0.9rem;
   }
 
   .teybol td::before {
     content: attr(data-label);
     position: absolute;
-    left: 0;
+    left: 16px;
     width: 30%;
-    padding-left: 20px;
     font-weight: bold;
     text-align: left;
     line-height: 95%;
@@ -202,5 +213,13 @@ svg {
 @media screen and (max-width: 345px) {
   .teybol td {
     font-size: 80%;
+  }
+}
+@media screen and (max-width: 497px) {
+  .teybol td:nth-child(1), .teybol td:nth-child(4) {
+    padding-bottom: 20px;
+  }
+  .header h2{
+    display: none;
   }
 }
