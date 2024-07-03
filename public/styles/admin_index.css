@@ -1,0 +1,255 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+
+body {
+  margin: 0 auto;
+  background-color: white;
+  font-family: "Inter", "Helvetica Neue", "Helvetica";
+  font-weight: 500;
+}
+html,
+body {
+  height: 100%;
+  background-size: cover;
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #075987;
+  color: white;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  height: 70px;
+  z-index: 1;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+.left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.navbar .logo {
+  width: 50px;
+  height: auto;
+  margin-right: 20px;
+  border-radius: 50%;
+}
+.navbar h2 {
+  margin-right: 30px;
+}
+.link{
+  text-decoration: none;
+  color: white;
+  font-size: 0.9rem;
+  transition: color 0.3s;
+}
+
+.link h2:hover{
+  color: rgb(209, 209, 209);
+  transform: translateY(-1px);
+}
+
+
+
+.logout-action{
+  background-color: rgb(173, 20, 20);
+  padding: 6px;
+  font-size: 16px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+  width: 1.5rem;
+  text-decoration: none;
+  margin-bottom: 5px;
+  height: 1.3rem;
+	
+}
+
+.logout-action:hover{
+  background-color:#bd2a2a;
+  cursor: pointer;
+}
+.logout-action:hover {
+  background-color: #890909;
+}
+a.logout-button {
+  padding-top: 20px;
+  background-color: transparent;
+  width: 50px;
+  height: 50px;
+}
+.logout-button:hover .svg-path {
+  fill: #bebebe; 
+}
+
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 15px;
+  border: rgba(0, 0, 0, 0.514) 2px solid;
+  margin-left: 0px;
+  margin-right: 0px;
+  display: flex;
+}
+
+.table-container-3 {
+  display: flex;
+  justify-content: center;
+  margin-top: 102px;
+}
+
+.table-container2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.teybol {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.teybol th,
+.teybol td {
+  padding: 18px;
+  text-align: left;
+  border-bottom: rgba(181, 178, 178, 0.424) 1px solid;
+}
+
+.teybol th {
+  background-color: #075987;
+  color: white;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: left;
+}
+tbody tr:nth-child(even) {
+  background-color: rgb(225, 225, 225);
+  color: rgb(0, 0, 0);
+}
+tbody tr:nth-child(odd) {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+}
+.delete-button {
+  background-color: rgb(173, 20, 20);
+}
+.edit-button {
+  background-color: rgb(22, 94, 161);
+}
+
+.logout-button {
+  padding: 6px;
+  font-size: 16px;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+  width: 2rem;
+  text-decoration: none;
+  margin-bottom: 5px;
+  height: 2rem;
+}
+svg {
+  color: white;
+  width: 70%;
+}
+.delete-button:hover {
+  background-color: #890909;
+}
+
+.edit-button:hover {
+  background-color: #054890;
+}
+.delete-button:last-child,
+.edit-button:last-child {
+  margin-right: 0;
+}
+@media screen and (max-width: 1174px) {
+  
+  .teybol td {
+    font-size: 0.75rem;
+  }
+  .teybol th {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 712px) {
+  .table-container {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .table-container-3,
+  .table-container,
+  .table-container-2 {
+    width: 100%;
+    border-radius: 0;
+    border: none;
+  }
+
+  .teybol thead {
+    display: none;
+  }
+
+  .teybol,
+  .teybol tbody,
+  .teybol tr,
+  .teybol td {
+    display: block;
+    width: 100%;
+    border-top: rgba(0, 0, 0, 0.569) 0.001rem solid;
+  }
+
+  .teybol tr {
+    margin-bottom: 0;
+  }
+
+  .teybol td {
+    box-sizing: border-box;
+    text-align: right;
+    padding-left: 0px;
+    padding-right: 16px;
+    position: relative;
+    font-size: 0.9rem;
+  }
+
+  .teybol td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 16px;
+    width: 30%;
+    font-weight: bold;
+    text-align: left;
+    line-height: 95%;
+  }
+  html,
+  body {
+    height: fit-content;
+    overflow-y: visible;
+  }
+}
+@media screen and (max-width: 345px) {
+  .teybol td {
+    font-size: 80%;
+  }
+}
+@media screen and (max-width: 497px) {
+  .teybol td:nth-child(1), .teybol td:nth-child(4) {
+    padding-bottom: 20px;
+  }
+  .navbar h2{
+    display: none;
+  }
+}
