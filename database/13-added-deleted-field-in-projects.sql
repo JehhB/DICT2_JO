@@ -1,0 +1,1 @@
+ALTER TABLE `Projects` ADD `deleted` BOOLEAN NOT NULL DEFAULT FALSE AFTER `project_logo`;

@@ -32,7 +32,8 @@ $sql = "
             *,
             proj.project_name
             FROM Personnels per
-            JOIN Projects proj ON per.project_id = proj.project_id
+            LEFT JOIN Projects proj ON per.project_id = proj.project_id
+            ORDER BY per.name ASC
         
 ";
 

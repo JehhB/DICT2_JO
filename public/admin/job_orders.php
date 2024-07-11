@@ -1,28 +1,26 @@
 <?php
-require_once __DIR__ . '/app/setup.php';
-$account = protectRoute();
+require_once __DIR__ . '/../app/setup.php';
+$account = protectRoute(true);
 
 $searchQuery = isset($_GET['search_query']) ? $_GET['search_query'] : '';
 $p = isset($_GET['p']) ? (int)$_GET['p'] : 1;
 if ($p < 1) $p = 1;
 
-// Query to count total job orders
 $countSql = "
     SELECT COUNT(*) as total
     FROM JobOrder jo
     LEFT JOIN Personnels pi ON jo.issued_by = pi.personnel_id
     LEFT JOIN Personnels pa ON jo.approved_by = pa.personnel_id
-    WHERE jo.performer_id = :personnel_id
+    LEFT JOIN Personnels pp ON jo.performer_id = pp.personnel_id
 ";
 
-$countParams = [
-    ':personnel_id' => $account['personnel_id']
-];
+$countParams = [];
 
 if (!empty($searchQuery)) {
-    $countSql .= " AND (jo.client_name LIKE :search_query OR
+    $countSql .= " WHERE (jo.client_name LIKE :search_query OR
         jo.job_order_number LIKE :search_query OR
         pi.name LIKE :search_query OR
+        pp.name LIKE :search_query OR
         jo.request_date LIKE :search_query OR
         jo.scheduled_start_date LIKE :search_query OR
         jo.scheduled_end_date LIKE :search_query OR
@@ -35,26 +33,26 @@ $countStmt = execute($countSql, $countParams);
 $totalCount = $countStmt->fetchColumn();
 $totalPages = ceil($totalCount / 8);
 
-// Main query to get job orders
 $sql = "
     SELECT
         *,
         pi.name AS issued_by,
-        pa.name AS approved_by
+        pa.name AS approved_by,
+        pp.name as performed_by
     FROM JobOrder jo
     LEFT JOIN Personnels pi ON jo.issued_by = pi.personnel_id
     LEFT JOIN Personnels pa ON jo.approved_by = pa.personnel_id
-    WHERE jo.performer_id = :personnel_id
+    LEFT JOIN Personnels pp ON jo.performer_id = pp.personnel_id
+    ORDER by jo.job_order_id DESC
 ";
 
-$params = [
-    ':personnel_id' => $account['personnel_id']
-];
+$params = [];
 
 if (!empty($searchQuery)) {
-    $sql .= " AND (jo.client_name LIKE :search_query OR
+    $sql .= " WHERE (jo.client_name LIKE :search_query OR
         jo.job_order_number LIKE :search_query OR
         pi.name LIKE :search_query OR
+        pp.name LIKE :search_query OR
         jo.request_date LIKE :search_query OR
         jo.scheduled_start_date LIKE :search_query OR
         jo.scheduled_end_date LIKE :search_query OR
@@ -69,18 +67,12 @@ $sql .= " LIMIT 8 OFFSET " . $offset;
 $stmt = execute($sql, $params);
 $job_orders = $stmt->fetchAll();
 
-// Calculate the start and end indices for the current page
-$startIndex = $offset + 1;
-$endIndex = min($offset + count($job_orders), $totalCount);
-
-echo $twig->render('dashboard.twig', [
+echo $twig->render('job_orders.twig', [
     'joborders' => $job_orders,
     'count' => count($job_orders),
+    'total_count' => $totalCount,
     'current_page' => $p,
     'total_pages' => $totalPages,
-    'search_query' => $searchQuery,
-    'total_count' => $totalCount,
-    'start_index' => $startIndex,  // Start index for the current page
-    'end_index' => $endIndex       // End index for the current page
+    'search_query' => $searchQuery
 ]);
-?>
+

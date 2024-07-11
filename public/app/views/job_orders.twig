@@ -1,0 +1,140 @@
+{% extends 'base.twig' %}
+{% block head %}
+<title>ADMIN | Job Orders</title>
+<link rel="stylesheet" href="/styles/style2.css">
+{% endblock %}
+{% block header %}
+ {% include 'nav-bar.twig'%}
+{% endblock %}
+{% block body %}
+<nav aria-label="Breadcrumb">
+    <ol class="flex p-4"> <li class="flex items-center">
+        <li class="flex items-center text-gray-500">
+            <span class="mx-2">Home</span>
+        </li>
+    </ol>
+</nav>
+
+<div class="container mx-auto mb-4 flex px-2 sm:px-0">
+
+ {% if total_count > 0 %}
+  <em> Showing 1-{{ count }} of {{ total_count }} results </em>
+  {% else %}
+ <em> Nothing Found. </em>
+  {% endif %}
+  <div class="ml-auto flex items-center gap-2">
+    <a
+      href="/form.php"
+      class="flex flex-row-reverse items-center gap-2 rounded bg-green-900 p-2 text-xs font-bold uppercase leading-none text-white"
+    >
+      <span class="hidden sm:block">add</span>
+      <font-awesome-icon icon="fa-solid fa-plus" class="h-3 w-3" />
+    </a>
+    <a
+      href="/summary.php"
+      class="flex flex-row-reverse items-center gap-2 rounded bg-blue-950 p-2 text-xs font-bold uppercase leading-none text-white"
+    >
+      <span class="hidden sm:block">download csv</span>
+      <font-awesome-icon icon="fa-solid fa-arrow-down" class="h-3 w-3" />
+    </a>
+    <div class="dropdown ml-auto flex items-center gap-2" >
+    <button class="dropbtn flex flex-row-reverse items-center gap-2 rounded bg-green-900 p-2 text-xs font-bold uppercase leading-none text-white">Filter</button>
+  <div class="dropdown-content">
+    <a href="#">Date</a>
+    <a href="#">Issued By</a>
+    <a href="#">Approved By</a>
+    <a href="#">Status</a>
+  </div>
+  </div>
+  </div>
+<div class="search" style="margin-left: 20px; margin-bottom:10px;">
+  <form action="job_orders.php" method="GET">
+      <input type="text" name="search_query" placeholder="Search..." style="background-color: dark-green;">
+      <button type="submit" class="search-button" style="background-color: green; color: white; border-radius:4px; padding:0.2rem">Search</button>
+  </form>
+</div>
+</div>
+
+
+
+<div class="container">
+<div class="table-container-3">
+  <div class="table-container">
+    <div class="table-container-2">
+
+      <table class="teybol">
+        <thead>
+          <tr>
+            <th>Job Order Number</th>
+            <th>Performed By</th>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Scheduled Date</th>
+            <th>Issued By</th>
+            <th>Approved By</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for jo in joborders %}
+            <tr>
+              <td data-label="Job Order Number">{{ jo.job_order_number }}</td>
+              <td data-label="Performed By">{{ jo.performed_by   }}</td>
+              <td data-label="Name">{{ jo.client_name }}</td>
+              <td data-label="Date">{{ jo.request_date | date("M d, Y") }}</td>
+              <td data-label="Scheduled Date">
+                {{ jo.scheduled_start_date | date("M d, Y") }}-{{ jo.scheduled_end_date | date("M d, Y") }}
+              </td>
+              <td data-label="Issued By">{{ jo.issued_by }}</td>
+              <td data-label="Approved By">{{ jo.approved_by }}</td>
+              <td data-label="Status">{{ jo.status }}</td>
+              <td data-label="Action" class="flex">
+                <form action="/form.php" class="mr-1 inline-flex">
+                  {% if jo.status == 'Draft' %}
+                  <input type="hidden" name="edit" value="{{ jo.job_order_id }}">
+                  <button type="sumbit" class="edit-button">
+                    <font-awesome-icon icon="fa-solid fa-pen" class="h-4 text-white" />
+                  </button>
+                  {% else %}
+                  <input type="hidden" name="id" value="{{ jo.job_order_id }}">
+                  <button type="sumbit" class="edit-button bg-green-950">
+                    <font-awesome-icon icon="fa-solid fa-eye" class="h-4 text-white" />
+                  </button>
+                  {% endif %}
+                </form>
+                <form action="/form.php" class="inline-flex">
+                  <input type="hidden" name="delete" value="{{ jo.job_order_id }}">
+                  <button class="delete-button">
+                    <font-awesome-icon icon="fa-solid fa-trash" class="h-4 text-white" />
+                  </button>
+                </form>
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="6" class="!text-left">
+                <em>No job orders found.</em>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+<div class="pagination">
+        {% if current_page > 1 %}
+            <a href="/admin/job_orders.php?p={{ current_page - 1 }}{% if search_query %}&search_query={{ search_query }}{% endif %}">Prev</a>
+        {% endif %}
+        {% if total_count > 1 %}
+        {% for n in range(1,total_pages) %}
+         <a href="/admin/job_orders.php?p={{ n }}{% if search_query %}&search_query={{ search_query }}{% endif %}">{{ n }}</a>
+         {% endfor %}
+         {% endif %}
+        {% if current_page < total_pages %}
+            <a href="/admin/job_orders.php?p={{ current_page + 1 }}{% if search_query %}&search_query={{ search_query }}{% endif %}">Next</a>
+        {% endif %}
+    </div>
+{% endblock %}
