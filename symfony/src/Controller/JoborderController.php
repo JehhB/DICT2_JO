@@ -3,29 +3,44 @@
 namespace App\Controller;
 
 use App\Entity\JobOrder;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class JoborderController extends AbstractController
 {
+  public function __construct(private EntityManagerInterface $entityManager) {}
+
+  #[Route('/admin/job_orders', name: 'admin_joborders')]
   #[Route('/dashboard', name: 'user_dashboard')]
-  public function index(EntityManagerInterface $entityManager): Response
+  public function index(PaginatorInterface $paginator, Request $request): Response
   {
-    $joborderRepository = $entityManager->getRepository(JobOrder::class);
-    $jobOrders = $joborderRepository->findAll();
+    /** @var \App\Repository\JobOrderRepository */
+    $joborderRepository = $this->entityManager->getRepository(JobOrder::class);
+
+    $qb = $joborderRepository->createJoinedQueryBuilder();
+
+    $criteria = Criteria::create();
+
+    /** @var \App\Entity\Account */
+    $account = $this->getUser();
+    if (!is_null($account->getPersonnel())) {
+      $criteria->andWhere(Criteria::expr()->eq('joborder.performer', $account->getPersonnel()));
+    }
+
+    $qb->addCriteria($criteria);
+    $jobOrders = $paginator->paginate(
+      $qb,
+      $request->request->getInt('p', 1),
+      10
+    );
 
     return $this->render('dashboard.twig', [
-      'joborders' => $jobOrders,
-      'count' => 10,
-      'current_page' => 1,
-      'total_pages' => 5,
-      'search_query' => '',
-      'total_count' => 100,
-      'start_index' => 1,
-      'end_index' => 10,
-      'sort_option' => 'date_asc'
+      'jobOrders' => $jobOrders,
     ]);
   }
 }

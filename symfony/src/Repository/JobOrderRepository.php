@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\JobOrder;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -11,45 +12,25 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class JobOrderRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, JobOrder::class);
-    }
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, JobOrder::class);
+  }
 
-    public function findAllJoinedToPersonnel(){
-        $entityManager = $this->getEntityManager();
-        $query = $entityManager->createQuery(
-            'SELECT jo, pi, pp ,pa
-            FROM App\Entity\JobOrders jo
-            LEFT JOIN jo.issued_by pi,
-            LEFT JOIN jo.approved_by pa,
-            LEFT JOIN jo.performer_id pp
-            '
-        );
-    }
+  public function createJoinedQueryBuilder(
+    string $joborder = 'joborder',
+    string $project = 'project',
+    string $performer = 'performer',
+    string $issuer = 'issuer',
+    string $approver = 'approver'
+  ): QueryBuilder {
+    $qb = $this->createQueryBuilder($joborder)
+      ->leftJoin($joborder . '.project', $project)
+      ->leftJoin($joborder . '.performer', $performer)
+      ->leftJoin($joborder . '.issuer', $issuer)
+      ->leftJoin($joborder . '.approver', $approver)
+      ->select($joborder, $project, $performer, $issuer, $approver);
 
-//    /**
-//     * @return JobOrder[] Returns an array of JobOrder objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('j')
-//            ->andWhere('j.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('j.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?JobOrder
-//    {
-//        return $this->createQueryBuilder('j')
-//            ->andWhere('j.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    return $qb;
+  }
 }
