@@ -54,7 +54,7 @@ class PersonnelController extends AbstractController
     return $this->redirectToRoute('personnels_index');
   }
 
-  #[Route('/admin/personnels/{id}', name: 'personnel_edit', methods: ['POST', 'PUT'])]
+  #[Route('/admin/personnels/{id}', name: 'personnel_edit', methods: ['PUT'])]
   public function edit(Personnel $personnel, Request $request)
   {
     /** @var \App\Repository\ProjectRepository */
@@ -75,7 +75,7 @@ class PersonnelController extends AbstractController
     return $this->redirectToRoute('personnels_index');
   }
 
-  #[Route('/admin/personnels/{id}', name: 'personnel_delete', methods: ['POST', 'DELETE'])]
+  #[Route('/admin/personnels/{id}', name: 'personnel_delete', methods: ['DELETE'])]
   public function delete(Personnel $personnel): Response
   {
     $personnel->setDeleted(true);
