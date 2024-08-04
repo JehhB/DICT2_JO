@@ -6,6 +6,7 @@
 {% include 'nav-bar.twig' %}
 {% endblock %}
 {% block body %}
+{% set is_admin = app.request.attributes.get('_route') == 'admin_joborders' %}
 {% set current_route = app.request.attributes.get('_route') %}
 {% set query = app.request.query.all %}
 
@@ -91,6 +92,9 @@
       <thead>
         <tr>
           <th>Job Order Number</th>
+          {% if is_admin %}
+            <th>Performed By</th>
+          {% endif %}
           <th>Name</th>
           <th>Date</th>
           <th>Scheduled Date</th>
@@ -103,16 +107,17 @@
       <tbody class="table-group-divider">
         {% for jo in jobOrders %}
           <tr>
-            <td data-label="Job Order Number">{{ jo.job_order_number }}</td>
-            <td data-label="Name">{{ jo.client_name }}</td>
-            <td data-label="Date">{{ jo.request_date | date("M d, Y") }}</td>
-            <td data-label="Scheduled Date">
-              {{ jo.scheduled_start_date | date("M d, Y") }}-{{ jo.scheduled_end_date | date("M d, Y") }}
-            </td>
-            <td data-label="Issued By">{{ jo.issued_by }}</td>
-            <td data-label="Approved By">{{ jo.approved_by }}</td>
-            <td data-label="Status">{{ jo.status }}</td>
-            <td data-label="Action" class="flex">
+            <td>{{ jo.job_order_number }}</td>
+            {% if is_admin %}
+              <td>{{ jo.performer.name }}</td>
+            {% endif %}
+            <td>{{ jo.client_name }}</td>
+            <td>{{ jo.request_date | date("M d, Y") }}</td>
+            <td>{{ jo.scheduled_start_date | date("M d, Y") }}-{{ jo.scheduled_end_date | date("M d, Y") }}</td>
+            <td>{{ jo.issued_by }}</td>
+            <td>{{ jo.approved_by }}</td>
+            <td>{{ jo.status }}</td>
+            <td class="flex">
               <div class="d-flex flex-no-wrap gap-1">
                 {% if jo.status == 'Draft' %}
                   <a href="/form.php?edit={{ jo.job_order_id}}" class="btn btn-sm btn-primary">
@@ -131,7 +136,7 @@
           </tr>
         {% else %}
           <tr>
-            <td colspan="8" class="!text-left">
+            <td colspan="999" class="!text-left">
               <em>No job orders found.</em>
             </td>
           </tr>
