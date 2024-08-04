@@ -21,7 +21,7 @@ class ActivityController extends AbstractController
   {
     $sessions = $this->sessionRepository->findAll();
 
-    return $this->render('admin/activities.twig', [
+    return $this->render('activities.twig', [
       'session' => $sessions
     ]);
   }

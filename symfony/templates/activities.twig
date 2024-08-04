@@ -3,8 +3,7 @@
 <title>ADMIN | Activities</title>
 {% endblock %}
 {% block header %}
-{% set current = "activities" %}
-
+{% include 'nav-bar.twig' %}
 {% endblock %}
 {% block body %}
 <div class="container mt-5">
@@ -20,15 +19,15 @@
       <tbody class="table-group-divider">
         {% for ses in session %}
           <tr>
-            <td data-label="Name">
+            <td>
               {{ ses.name | default("Admin") }}
             </td>
-            <td data-label="Log in Time">{{ ses.login | date("M d, Y H:i ", "Asia/Manila") }}</td>
-            <td data-label="Log out Time">
-              {% if ses.logout is null %}
+            <td>{{ ses.loginAt | date("M d, Y H:i ", "Asia/Manila") }}</td>
+            <td>
+              {% if ses.logoutAt is null %}
                 Still Logged In
               {% else %}
-                {{ ses.logout | date("M d, Y H:i", "Asia/Manila") }}
+                {{ ses.logoutAt | date("M d, Y H:i", "Asia/Manila") }}
               {% endif %}
             </td>
           </tr>

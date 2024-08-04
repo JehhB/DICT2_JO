@@ -25,7 +25,7 @@ class PersonnelController extends AbstractController
     $personnels = $this->personnelRepository->findAllJoined();
     $projects = $this->projectRepository->findAll();
 
-    return $this->render('admin/personnels.twig', [
+    return $this->render('personnels.twig', [
       'personnel' => $personnels,
       'projects' => $projects,
     ]);

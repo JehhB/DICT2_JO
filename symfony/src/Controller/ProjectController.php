@@ -27,7 +27,7 @@ class ProjectController extends AbstractController
       return $item->getName();
     }, $personnels);
 
-    return $this->render('admin/projects.twig', [
+    return $this->render('projects.twig', [
       'project' => $projects,
       'personnel' => $personnels,
       'options' => $options,
