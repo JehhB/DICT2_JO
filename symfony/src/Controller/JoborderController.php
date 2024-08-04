@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\JobOrder;
+use App\Repository\JobOrderRepository;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -13,16 +14,16 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class JoborderController extends AbstractController
 {
-  public function __construct(private EntityManagerInterface $entityManager) {}
+  public function __construct(
+    private EntityManagerInterface $entityManager,
+    private JobOrderRepository $jobOrderRepository
+  ) {}
 
   #[Route('/admin/job_orders', name: 'admin_joborders')]
   #[Route('/dashboard', name: 'user_dashboard')]
   public function index(PaginatorInterface $paginator, Request $request): Response
   {
-    /** @var \App\Repository\JobOrderRepository */
-    $joborderRepository = $this->entityManager->getRepository(JobOrder::class);
-
-    $qb = $joborderRepository->createJoinedQueryBuilder();
+    $qb = $this->jobOrderRepository->createJoinedQueryBuilder();
 
     $criteria = Criteria::create();
 

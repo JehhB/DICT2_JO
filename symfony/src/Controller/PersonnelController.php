@@ -3,7 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Personnel;
-use App\Entity\Project;
+use App\Repository\PersonnelRepository;
+use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,18 +13,17 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PersonnelController extends AbstractController
 {
-  public function __construct(private EntityManagerInterface $entityManager) {}
+  public function __construct(
+    private EntityManagerInterface $entityManager,
+    private PersonnelRepository $personnelRepository,
+    private ProjectRepository $projectRepository
+  ) {}
 
   #[Route('/admin/personnels', name: 'personnels_index', methods: ['GET'])]
   public function index(): Response
   {
-    /** @var \App\Repository\PersonnelRepository */
-    $personnelRepository = $this->entityManager->getRepository(Personnel::class);
-    /** @var \App\Repository\ProjectRepository */
-    $projectRepository = $this->entityManager->getRepository(Project::class);
-
-    $personnels = $personnelRepository->findAllJoined();
-    $projects = $projectRepository->findAll();
+    $personnels = $this->personnelRepository->findAllJoined();
+    $projects = $this->projectRepository->findAll();
 
     return $this->render('admin/personnels.twig', [
       'personnel' => $personnels,
@@ -34,9 +34,7 @@ class PersonnelController extends AbstractController
   #[Route('/admin/personnels', name: 'personnels_add', methods: ['POST'])]
   public function add(Request $request): Response
   {
-    /** @var \App\Repository\ProjectRepository */
-    $projectRepository = $this->entityManager->getRepository(Project::class);
-    $projects = $projectRepository->find($request->request->get('project_id'));
+    $projects = $this->projectRepository->find($request->request->get('project_id'));
 
     if (is_null($projects)) {
       return new Response("Project does not exist.", 400);
@@ -57,15 +55,12 @@ class PersonnelController extends AbstractController
   #[Route('/admin/personnels/{id}', name: 'personnel_edit', methods: ['PUT'])]
   public function edit(Personnel $personnel, Request $request)
   {
-    /** @var \App\Repository\ProjectRepository */
-    $projectRepository = $this->entityManager->getRepository(Project::class);
-
     if ($request->request->has('name')) $personnel->setName($request->request->get('name'));
     if ($request->request->has('position')) $personnel->setPosition($request->request->get('position'));
 
     if (
       $request->request->has('project_id') && !is_null(
-        $project = $projectRepository->find($request->request->get('project_id'))
+        $project = $this->projectRepository->find($request->request->get('project_id'))
       )
     ) {
       $personnel->setProject($project);
