@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\JobOrder;
 use App\Repository\JobOrderRepository;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
