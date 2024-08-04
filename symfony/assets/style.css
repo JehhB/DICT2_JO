@@ -20,5 +20,12 @@
   }
 }
 
+.no-wrap,
+.table.no-wrap td,
+.table.no-wrap th {
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
 @tailwind components;
 @tailwind utilities;

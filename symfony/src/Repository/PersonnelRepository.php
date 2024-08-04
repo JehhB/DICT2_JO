@@ -15,6 +15,7 @@ class PersonnelRepository extends ServiceEntityRepository
   {
     parent::__construct($registry, Personnel::class);
   }
+
   public function findAllJoined()
   {
     $entityManager = $this->getEntityManager();
@@ -26,5 +27,17 @@ class PersonnelRepository extends ServiceEntityRepository
     );
 
     return $query->getArrayResult();
+  }
+
+
+  public function createJoinedQueryBuilder(
+    string $personnel = "personnel",
+    string $project = "project"
+  ) {
+    $qb = $this->createQueryBuilder($personnel)
+      ->leftJoin("$personnel.project", $project)
+      ->select($personnel, $project);
+
+    return $qb;
   }
 }

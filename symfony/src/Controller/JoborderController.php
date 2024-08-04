@@ -35,7 +35,7 @@ class JoborderController extends AbstractController
     $qb->addCriteria($criteria);
     $jobOrders = $paginator->paginate(
       $qb,
-      $request->request->getInt('p', 1),
+      $request->query->getInt('page', 1),
       10
     );
 

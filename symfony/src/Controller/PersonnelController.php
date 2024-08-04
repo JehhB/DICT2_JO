@@ -6,6 +6,8 @@ use App\Entity\Personnel;
 use App\Repository\PersonnelRepository;
 use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,13 +22,20 @@ class PersonnelController extends AbstractController
   ) {}
 
   #[Route('/admin/personnels', name: 'personnels_index', methods: ['GET'])]
-  public function index(): Response
+  public function index(PaginatorInterface $paginator, Request $request, LoggerInterface $logger): Response
   {
-    $personnels = $this->personnelRepository->findAllJoined();
+    $qb = $this->personnelRepository->createJoinedQueryBuilder()
+      ->andWhere('personnel.is_deleted = 0');
+
     $projects = $this->projectRepository->findAll();
+    $personnels = $paginator->paginate(
+      $qb,
+      $request->query->getInt('page', 1),
+      10
+    );
 
     return $this->render('personnels.twig', [
-      'personnel' => $personnels,
+      'personnels' => $personnels,
       'projects' => $projects,
     ]);
   }
