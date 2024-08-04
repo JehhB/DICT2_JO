@@ -76,7 +76,7 @@
         </button>
       </form>
       <a
-        href="/dashboard.php"
+        href="{{ path(app.request.attributes.get('_route')) }}"
         class="btn btn-sm btn-danger d-flex align-items-center gap-1"
       >
         <span class="hidden sm:block">Clear</span>

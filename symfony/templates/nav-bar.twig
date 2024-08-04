@@ -1,23 +1,15 @@
 {% set route = app.request.attributes.get('_route') %}
-<nav class="navbar sticky-top navbar-expand-lg {% if app.user.admin %}bg-danger{% else %}bg-primary{% endif %}" data-bs-theme="dark">
+<nav class="navbar navbar-expand-md" style="background-color: {{ app.user.admin ? '#eb4c39' : '#3f5e8c'}}" data-bs-theme="dark">
   <div class="container">
-    <a class="navbar-brand fw-semibold fs-2" href="/">
+    <a class="navbar-brand" href="#">
       <img src="/assets/logo.png" alt="Logo" class="d-inline-block align-text-center tw-w-14 tw-h-14 rounded-circle">
       DICT
     </a>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNavDropdown"
-      aria-controls="navbarNavDropdown"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="offcanvas offcanvas-end" id="navbarNavDropdown">
-      <ul class="navbar-nav fs-5 ms-lg-auto px-lg-2 py-lg-3 gap-3 p-5">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         {% if app.user.admin %}
         <li class="nav-item">
           <a 
@@ -41,9 +33,10 @@
           <a class="nav-link{% if route == 'dashboard_user' %} active" aria-current="page{%endif%}" href="{{ path('dashboard_user') }}">Dashboards</a>
         </li>
         {% endif %}
-        <a href="{{ path('app_logout') }}" class="btn btn-secondary align-self-center">Logout</a>
       </ul>
+      <div class="d-flex">
+        <a href="{{ path('app_logout') }}" class="btn btn-secondary align-self-center">Logout</a>
+      </div>
     </div>
   </div>
 </nav>
-
