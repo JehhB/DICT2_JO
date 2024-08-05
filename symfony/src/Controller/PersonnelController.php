@@ -24,8 +24,14 @@ class PersonnelController extends AbstractController
   #[Route('/admin/personnels', name: 'personnels_index', methods: ['GET'])]
   public function index(PaginatorInterface $paginator, Request $request, LoggerInterface $logger): Response
   {
-    $qb = $this->personnelRepository->createJoinedQueryBuilder()
-      ->andWhere('personnel.is_deleted = 0');
+    $search = $request->query->getString('search', '');
+
+    $qb = $this->personnelRepository->createJoinedQueryBuilder();
+    $qb->andWhere('personnel.is_deleted = 0')
+      ->andWhere($qb->expr()->orX(
+        'personnel.name LIKE :search',
+        'project.name LIKE :search',
+      ))->setParameter(':search', '%' . $search .  '%');
 
     $projects = $this->projectRepository->findAll();
     $personnels = $paginator->paginate(
@@ -37,6 +43,7 @@ class PersonnelController extends AbstractController
     return $this->render('personnels.twig', [
       'personnels' => $personnels,
       'projects' => $projects,
+      'search' => $search,
     ]);
   }
 
