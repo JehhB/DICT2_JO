@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Repository\JobOrderRepository;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -22,25 +21,34 @@ class JoborderController extends AbstractController
   #[Route('/dashboard', name: 'user_dashboard')]
   public function index(PaginatorInterface $paginator, Request $request): Response
   {
-    $qb = $this->jobOrderRepository->createJoinedQueryBuilder();
-
-    $criteria = Criteria::create();
-
     /** @var \App\Entity\Account */
     $account = $this->getUser();
+
+    $search = $request->query->getString('search', '');
+
+    $qb = $this->jobOrderRepository->createJoinedQueryBuilder();
+    $qb = $qb->orWhere('joborder.client_name LIKE :search')
+      ->orWhere('joborder.control_number LIKE :search');
+
+    if ($account->isAdmin()) {
+      $qb = $qb->orWhere('performer.name LIKE :search');
+    }
+    $qb = $qb->setParameter(':search', $search);
+
     if (!is_null($account->getPersonnel())) {
-      $criteria->andWhere(Criteria::expr()->eq('joborder.performer', $account->getPersonnel()));
+      $qb = $qb->andWhere('joborder.performer = :performer')
+        ->setParameter(':performer', $account);
     }
 
-    $qb->addCriteria($criteria);
     $jobOrders = $paginator->paginate(
       $qb,
       $request->query->getInt('page', 1),
       10
     );
 
-    return $this->render('dashboard.twig', [
+    return $this->render('job_orders.twig', [
       'jobOrders' => $jobOrders,
+      'search' => $search,
     ]);
   }
 }
