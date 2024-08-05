@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\AccountSession;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -11,33 +12,32 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class AccountSessionRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, AccountSession::class);
-    }
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, AccountSession::class);
+  }
 
-    //    /**
-    //     * @return AccountSession[] Returns an array of AccountSession objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('a.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+  public function createJoinedQueryBuilder(
+    string $accountSession = 'session',
+    string $account = 'account',
+    string $personnel = 'personnel',
+  ) {
+    $qb = $this->createQueryBuilder($accountSession)
+      ->leftJoin("$accountSession.account", $account)
+      ->leftJoin("$account.personnel", $personnel)
+      ->select($accountSession, $account, $personnel);
 
-    //    public function findOneBySomeField($value): ?AccountSession
-    //    {
-    //        return $this->createQueryBuilder('a')
-    //            ->andWhere('a.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    return $qb;
+  }
+
+  public function logoutAll()
+  {
+    $em = $this->getEntityManager();
+    $query = $em->createQuery(
+      'UPDATE App\Entity\AccountSession s
+       SET s.logout_at = :now
+       WHERE s.logout_at IS NULL'
+    )->setParameter(':now', new DateTimeImmutable());
+    $query->execute();
+  }
 }

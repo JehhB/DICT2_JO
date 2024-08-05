@@ -6,9 +6,67 @@
 {% include 'nav-bar.twig' %}
 {% endblock %}
 {% block body %}
-<div class="container mt-5">
+<div
+  class="modal fade"
+  id="logoutConfirmationModal"
+  tabindex="-1"
+  aria-labelledby="logoutConfirmationLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutConfirmationLabel">Logout all currently active</h5>
+      </div>
+      <div class="modal-body">Are your sure you want to logout all currently active? This will also log you out</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form
+          action="{{ path(app.request.attributes.get('_route')) }}"
+          method="POST"
+        >
+          <input type="hidden" name="_method" value="DELETE">
+          <button class="btn btn-danger" id="confirmDelete">Logout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-4">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">Activities</li>
+    </ol>
+  </nav>
+</div>
+
+<div class="container">
+  <div class="row align-items-center justify-content-between gap-2">
+    <em class="col-auto">
+      {% if sessions.totalItemCount > 0 %}
+        Showing {{ sessions.customParameters.startIndex }} - {{ sessions.customParameters.endIndex }} of
+        {{ sessions.totalItemCount }} results
+      {% else %}
+        Nothing Found.
+      {% endif %}
+    </em>
+    <div class="d-flex justify-content-start align-items-center col-auto gap-2">
+      <button
+        class="btn btn-sm btn-danger d-flex align-items-center gap-1"
+        data-bs-toggle="modal"
+        data-bs-target="#logoutConfirmationModal"
+      >
+        <span class="hidden sm:block">Logout all</span>
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="container mt-4 mt-sm-5">
   <div class="col col-md-9 col-lg-8 col-xl-7 col-xxl-6 table-responsive mx-auto">
-    <table class="table-light table-striped table border">
+    <table class="table-light table-striped table border no-wrap">
       <thead>
         <tr>
           <th>Name</th>
@@ -17,10 +75,10 @@
         </tr>
       </thead>
       <tbody class="table-group-divider">
-        {% for ses in session %}
+        {% for ses in sessions %}
           <tr>
             <td>
-              {{ ses.name | default("Admin") }}
+              {% if ses.account.personnel %}{{ ses.account.personnel.name }}{% else %}Admin{% endif %}
             </td>
             <td>{{ ses.loginAt | date("M d, Y H:i ", "Asia/Manila") }}</td>
             <td>
@@ -35,5 +93,9 @@
       </tbody>
     </table>
   </div>
+</div>
+
+<div class="container mt-3">
+  {{ knp_pagination_render(sessions) }}
 </div>
 {% endblock %}
